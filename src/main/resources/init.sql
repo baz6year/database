@@ -19,7 +19,7 @@ VALUES
     ('Lecture', '13 May', '12:00', 'B205', 'Mr Evans'),
     ('Conference', '20 May', '13:00', 'B200', 'Mrs Brown'),
     ('Meeting', '17 May', '14:00', 'B210', 'Mrs Smith'),
-    ('Concert', '21 May', '17:00', 'Hall', 'Mr Lewis'),
+    ('Concert', '20 May', '17:00', 'Hall', 'Mr Evans'),
     ('Presentation', '19 May', '15:00', 'B204', 'Mrs Young');
 
 -- Таблица profile
