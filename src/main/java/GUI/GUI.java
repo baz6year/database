@@ -1,86 +1,130 @@
 package GUI;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GUI extends Application {
+    private final Map<String, String> userDatabase = new HashMap<>();
+    private final Map<String, String> userRoles = new HashMap<>();
+
     @Override
     public void start(Stage primaryStage) {
+
+        userDatabase.put("admin", "admin123");
+        userDatabase.put("organizer", "organizer123");
+        userDatabase.put("student", "student123");
+        userDatabase.put("teacher", "teacher123");
+
+        userRoles.put("admin", "Welcome, Admin! Manage your campus effectively.");
+        userRoles.put("organizer", "Welcome, Organizer! Plan your events seamlessly.");
+        userRoles.put("student", "Welcome, Student! Explore and engage in campus activities.");
+        userRoles.put("teacher", "Welcome, Teacher! Manage your lectures and connect with students.");
+
         primaryStage.setTitle("Campus Event Management System");
 
-        // Главный экран с выбором роли
-        Label welcomeLabel = new Label("Выберите вашу роль:");
-        Button adminButton = new Button("Администратор кампуса");
-        Button organizerButton = new Button("Организатор мероприятий");
-        Button studentButton = new Button("Студент");
-        Button lecturerButton = new Button("Преподаватель/Лектор");
 
-        adminButton.setOnAction(e -> openAdminPanel());
-        organizerButton.setOnAction(e -> openOrganizerPanel());
-        studentButton.setOnAction(e -> openStudentPanel());
-        lecturerButton.setOnAction(e -> openLecturerPanel());
+        Label loginLabel = new Label("Enter your username and password:");
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Username");
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
+        Button loginButton = new Button("Login");
 
-        VBox mainLayout = new VBox(10, welcomeLabel, adminButton, organizerButton, studentButton, lecturerButton);
-        Scene mainScene = new Scene(mainLayout, 400, 300);
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
 
-        primaryStage.setScene(mainScene);
+        loginButton.setOnAction(e -> {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+
+            if (authenticateUser(username, password)) {
+                openRoleScreen(primaryStage, username);
+            } else {
+                errorLabel.setText("Invalid username or password!");
+            }
+        });
+
+        VBox loginLayout = new VBox(10, loginLabel, usernameField, passwordField, loginButton, errorLabel);
+        loginLayout.setAlignment(Pos.CENTER);
+        Scene loginScene = new Scene(loginLayout, 400, 300);
+
+        primaryStage.setScene(loginScene);
         primaryStage.show();
     }
 
-    private void openAdminPanel() {
-        Stage adminStage = new Stage();
-        adminStage.setTitle("Панель администратора кампуса");
-
-        Label adminLabel = new Label("Добро пожаловать, администратор!");
-        // Добавьте другие элементы GUI и функциональность
-        VBox adminLayout = new VBox(10, adminLabel);
-        Scene adminScene = new Scene(adminLayout, 400, 300);
-
-        adminStage.setScene(adminScene);
-        adminStage.show();
+    private boolean authenticateUser(String username, String password) {
+        return userDatabase.containsKey(username) && userDatabase.get(username).equals(password);
     }
 
-    private void openOrganizerPanel() {
-        Stage organizerStage = new Stage();
-        organizerStage.setTitle("Панель организатора мероприятий");
+    private void openRoleScreen(Stage primaryStage, String username) {
+        String role = username.toLowerCase();
+        if (!userRoles.containsKey(role)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Unknown role! Please contact support.");
+            alert.showAndWait();
+            return;
+        }
 
-        Label organizerLabel = new Label("Добро пожаловать, организатор!");
-        // Добавьте другие элементы GUI и функциональность
-        VBox organizerLayout = new VBox(10, organizerLabel);
-        Scene organizerScene = new Scene(organizerLayout, 400, 300);
+        primaryStage.setTitle("Campus Event Management System - Role");
 
-        organizerStage.setScene(organizerScene);
-        organizerStage.show();
+        Label welcomeLabel = new Label(userRoles.get(role));
+        Button actionButton = new Button("Proceed to Menu");
+
+        actionButton.setOnAction(e -> openMenu(primaryStage, role));
+
+        VBox roleLayout = new VBox(10, welcomeLabel, actionButton);
+        roleLayout.setAlignment(Pos.CENTER);
+        Scene roleScene = new Scene(roleLayout, 400, 300);
+
+        primaryStage.setScene(roleScene);
     }
 
-    private void openStudentPanel() {
-        Stage studentStage = new Stage();
-        studentStage.setTitle("Панель студента");
+    private void openMenu(Stage primaryStage, String role) {
+        primaryStage.setTitle("Campus Event Management System - Menu");
 
-        Label studentLabel = new Label("Добро пожаловать, студент!");
-        // Добавьте другие элементы GUI и функциональность
-        VBox studentLayout = new VBox(10, studentLabel);
-        Scene studentScene = new Scene(studentLayout, 400, 300);
+        Label menuLabel = new Label("Welcome to the Menu! Select an action:");
+        Button actionButton = new Button();
+        switch (role) {
+            case "admin":
+                actionButton.setText("Manage Users");
+                actionButton.setOnAction(e -> showInfo("Managing users functionality."));
+                break;
+            case "organizer":
+                actionButton.setText("Plan Events");
+                actionButton.setOnAction(e -> showInfo("Planning events functionality."));
+                break;
+            case "student":
+                actionButton.setText("View Events");
+                actionButton.setOnAction(e -> showInfo("Viewing events functionality."));
+                break;
+            case "teacher":
+                actionButton.setText("Manage Lectures");
+                actionButton.setOnAction(e -> showInfo("Managing lectures functionality."));
+                break;
+        }
 
-        studentStage.setScene(studentScene);
-        studentStage.show();
+        VBox menuLayout = new VBox(10, menuLabel, actionButton);
+        menuLayout.setAlignment(Pos.CENTER);
+        Scene menuScene = new Scene(menuLayout, 400, 300);
+
+        primaryStage.setScene(menuScene);
     }
 
-    private void openLecturerPanel() {
-        Stage lecturerStage = new Stage();
-        lecturerStage.setTitle("Панель преподавателя");
-
-        Label lecturerLabel = new Label("Добро пожаловать, преподаватель!");
-        // Добавьте другие элементы GUI и функциональность
-        VBox lecturerLayout = new VBox(10, lecturerLabel);
-        Scene lecturerScene = new Scene(lecturerLayout, 400, 300);
-
-        lecturerStage.setScene(lecturerScene);
-        lecturerStage.show();
+    private void showInfo(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public static void main(String[] args) {
