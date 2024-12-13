@@ -17,10 +17,10 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        userDatabase.put("admin", "admin123");
-        userDatabase.put("organizer", "organizer123");
-        userDatabase.put("student", "student123");
-        userDatabase.put("teacher", "teacher123");
+        userDatabase.put("admin", "1234");
+        userDatabase.put("organizer", "12345");
+        userDatabase.put("student", "123456");
+        userDatabase.put("teacher", "1234567");
 
         userRoles.put("admin", "Welcome, Admin! Manage your campus effectively.");
         userRoles.put("organizer", "Welcome, Organizer! Plan your events seamlessly.");
